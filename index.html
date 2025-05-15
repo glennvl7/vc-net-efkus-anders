@@ -66,26 +66,40 @@
   let selectedZone = null;
   let currentColor = null;
 
+  // Load saved colors from localStorage
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('.zone').forEach(zone => {
+      const savedColor = localStorage.getItem(zone.id);
+      if (savedColor) {
+        zone.setAttribute('fill', savedColor);
+      }
+
+      // Add click handler
+      zone.addEventListener('click', function () {
+        if (selectedZone) {
+          selectedZone.classList.remove('selected');
+        }
+        selectedZone = this;
+        selectedZone.classList.add('selected');
+        if (currentColor) {
+          selectedZone.setAttribute('fill', currentColor);
+          localStorage.setItem(selectedZone.id, currentColor);
+        }
+      });
+    });
+  });
+
   function setColor(color) {
     currentColor = color;
     if (selectedZone) {
       selectedZone.setAttribute('fill', color);
+      localStorage.setItem(selectedZone.id, color);
     }
   }
-
-  document.querySelectorAll('.zone').forEach(zone => {
-    zone.addEventListener('click', function () {
-      if (selectedZone) {
-        selectedZone.classList.remove('selected');
-      }
-      selectedZone = this;
-      selectedZone.classList.add('selected');
-      if (currentColor) {
-        selectedZone.setAttribute('fill', currentColor);
-      }
-    });
-  });
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
