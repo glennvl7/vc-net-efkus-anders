@@ -154,36 +154,39 @@
 
     // --- Flip countdown timer code ---
     // Calculate the countdown target: 2 hours starting at 22:20 local time.
-    function getCountdownTarget() {
-      const now = new Date();
-      let target = new Date();
-      target.setHours(22, 20, 0, 0); // today at 22:20:00
+    function getCountdownTimes() {
+  const now = new Date();
 
-      // If current time is already past 22:20, set target for tomorrow at 22:20
-      if (now > target) {
-        target.setDate(target.getDate() + 1);
-      }
+  // Start time today at 22:20
+  let startTime = new Date(now);
+  startTime.setHours(22, 20, 0, 0);
 
-      // Add 2 hours to the start time to get countdown end time
-      target = new Date(target.getTime() + 2 * 60 * 60 * 1000);
-      return target;
-    }
+  // If current time is before today 22:20, use yesterday 22:20 as start
+  if (now < startTime) {
+    startTime.setDate(startTime.getDate() - 1);
+  }
 
-    const targetTime = getCountdownTarget();
+  // Countdown ends 2 hours after start time
+  let endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000);
 
-    function updateTimer() {
-      const now = new Date();
-      let diff = targetTime - now;
+  return { now, startTime, endTime };
+}
 
-      if (diff < 0) diff = 0;
+function updateTimer() {
+  const { now, startTime, endTime } = getCountdownTimes();
 
-      const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
-      const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
-      const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+  let diff = endTime - now;
 
-      flip(document.getElementById('hours'), hours);
-      flip(document.getElementById('minutes'), minutes);
-      flip(document.getElementById('seconds'), seconds);
+  if (diff < 0) diff = 0; // countdown finished
+
+  const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
+  const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
+  const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+
+  flip(document.getElementById('hours'), hours);
+  flip(document.getElementById('minutes'), minutes);
+  flip(document.getElementById('seconds'), seconds);
+}
     }
 
     function flip(el, newVal) {
