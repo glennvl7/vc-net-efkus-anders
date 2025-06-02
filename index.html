@@ -172,24 +172,37 @@
   }
 
   // Leaderboard update function
-  function updateLeaderboard() {
-    // Count claimed areas per team
-    const counts = { team1: 0, team2: 0, team3: 0 };
+// Helper: Convert hex color (#rrggbb) to rgb string "rgb(r, g, b)"
+function hexToRgb(hex) {
+  const bigint = parseInt(hex.slice(1), 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgb(${r}, ${g}, ${b})`;
+}
 
-    // All zones
-    const zones = document.querySelectorAll('.zone');
-    zones.forEach(zone => {
-      const fill = zone.style.fill.toLowerCase();
-      if (fill === teamColors.team1) counts.team1++;
-      else if (fill === teamColors.team2) counts.team2++;
-      else if (fill === teamColors.team3) counts.team3++;
-    });
+function updateLeaderboard() {
+  const counts = { team1: 0, team2: 0, team3: 0 };
+  const zones = document.querySelectorAll('.zone');
 
-    // Update leaderboard DOM
-    document.getElementById('score-team1').textContent = counts.team1;
-    document.getElementById('score-team2').textContent = counts.team2;
-    document.getElementById('score-team3').textContent = counts.team3;
-  }
+  // Precompute rgb equivalents of team colors
+  const teamColorsRgb = {
+    team1: hexToRgb(teamColors.team1),
+    team2: hexToRgb(teamColors.team2),
+    team3: hexToRgb(teamColors.team3),
+  };
+
+  zones.forEach(zone => {
+    const fill = getComputedStyle(zone).fill; // computed style gives rgb(...)
+    if (fill === teamColorsRgb.team1) counts.team1++;
+    else if (fill === teamColorsRgb.team2) counts.team2++;
+    else if (fill === teamColorsRgb.team3) counts.team3++;
+  });
+
+  document.getElementById('score-team1').textContent = counts.team1;
+  document.getElementById('score-team2').textContent = counts.team2;
+  document.getElementById('score-team3').textContent = counts.team3;
+}
 
   // Initial leaderboard update
   updateLeaderboard();
