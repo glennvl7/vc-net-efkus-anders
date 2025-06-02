@@ -2,117 +2,109 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SVG Zones Color Picker with Flip Countdown Timer</title>
+  <title>SVG Zones with Timer & Leaderboard</title>
   <style>
-    /* --- Page & body setup --- */
     body {
-      margin: 0;
-      background: #111;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 20px;
+      background: #121212;
+      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
-      font-family: 'Courier New', Courier, monospace;
-      padding: 20px 10px 40px;
-      color: white;
     }
-
-    /* --- Flip countdown timer styles --- */
-    .timer-wrapper {
-      display: flex;
-      gap: 20px;
+    svg {
+      width: 90vw;
+      max-width: 600px;
+      height: auto;
+      border: 2px solid #444;
       margin-bottom: 30px;
     }
-
-    .flip-unit {
-      text-align: center;
-    }
-
-    .label {
-      color: #aaa;
-      font-size: 14px;
-      margin-top: 5px;
-      user-select: none;
-    }
-
-    .flip-card {
-      position: relative;
-      width: 80px;
-      height: 100px;
-      background: #222;
-      color: #00ffcc;
-      font-size: 3em;
-      font-weight: bold;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: inset 0 -4px 0 rgba(0, 255, 200, 0.2), 0 4px 10px rgba(0, 0, 0, 0.5);
-      perspective: 1000px;
-      user-select: none;
-    }
-
-    .flip-card span {
-      display: block;
-    }
-
-    .flip-animation {
-      animation: flip 0.7s ease-in-out;
-    }
-
-    @keyframes flip {
-      0%   { transform: rotateX(0deg); }
-      50%  { transform: rotateX(90deg); }
-      100% { transform: rotateX(0deg); }
-    }
-
-    /* --- Responsive SVG styles --- */
-    svg {
-      max-width: 600px;
-      width: 100%;
-      height: auto;
-      border: 1px solid #ccc;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      user-select: none;
-    }
-
     .zone {
       cursor: default;
-      transition: fill 0.3s ease, stroke-width 0.3s ease;
+      transition: fill 0.3s ease;
+      stroke: #222;
+      stroke-width: 1;
+    }
+    /* Countdown Timer Styles */
+    #countdown {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      font-size: 3rem;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      font-family: 'Courier New', Courier, monospace;
+      background: #222;
+      padding: 10px 30px;
+      border-radius: 12px;
+      user-select: none;
+      box-shadow: 0 0 15px #00ffffaa;
+    }
+    .segment {
+      position: relative;
+      width: 3ch;
+      text-align: center;
+      margin: 0 5px;
+      color: #00ffff;
+    }
+    .colon {
+      width: 1ch;
+      color: #00ffff;
+      user-select: none;
     }
 
-    .zone:hover {
-      opacity: 0.8;
+    /* Leaderboard styles */
+    #leaderboard {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      width: 100%;
+      max-width: 600px;
     }
-
-    .selected {
-      stroke-width: 2.5 !important;
+    .team {
+      background: #222;
+      border-radius: 12px;
+      padding: 15px 25px;
+      flex: 1;
+      box-shadow: 0 0 10px #000;
+      text-align: center;
+    }
+    .team-color {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 10px auto;
+      border-radius: 50%;
+      box-shadow: 0 0 12px;
+    }
+    .team1 { background-color: #ff4444; box-shadow: 0 0 10px #ff4444; }
+    .team2 { background-color: #44ff44; box-shadow: 0 0 10px #44ff44; }
+    .team3 { background-color: #4444ff; box-shadow: 0 0 10px #4444ff; }
+    .team-name {
+      font-size: 1.3rem;
+      margin-bottom: 6px;
+    }
+    .team-score {
+      font-size: 2.5rem;
+      font-weight: 900;
+      font-family: 'Courier New', Courier, monospace;
     }
   </style>
 </head>
 <body>
 
-  <!-- Flip countdown timer -->
-  <div class="timer-wrapper" aria-label="Countdown timer">
-    <div class="flip-unit">
-      <div class="flip-card" id="hours" aria-live="polite" aria-atomic="true">00</div>
-      <div class="label">HOURS</div>
-    </div>
-    <div class="flip-unit">
-      <div class="flip-card" id="minutes" aria-live="polite" aria-atomic="true">00</div>
-      <div class="label">MINUTES</div>
-    </div>
-    <div class="flip-unit">
-      <div class="flip-card" id="seconds" aria-live="polite" aria-atomic="true">00</div>
-      <div class="label">SECONDS</div>
-    </div>
+  <!-- Countdown Timer -->
+  <div id="countdown" aria-label="Countdown timer">
+    <div id="hours" class="segment">00</div>
+    <div class="colon">:</div>
+    <div id="minutes" class="segment">00</div>
+    <div class="colon">:</div>
+    <div id="seconds" class="segment">00</div>
   </div>
 
   <!-- SVG Map -->
-  <svg viewBox="0 0 800 1000" role="img" aria-label="Map of Brugge divided into zones">
+  <svg viewBox="0 0 800 1000" aria-label="City center of Brugge divided into zones" role="img" >
     <path class="zone" id="path4" d="M 531.39075,13.788582 C 504.87424,38.53732 504.87424,38.183766 504.87424,38.183766 l -57.27565,13.788582 -46.31549,16.61701 -74.24621,50.911692 -13.78859,15.55635 6.01041,94.7523 213.54625,-12.37436 18.73833,-26.51651 18.73833,-19.79899 10.25305,-20.5061 10.96015,-26.16295 15.2028,-12.37437 26.5165,-8.13172 22.27387,-3.53554 L 693.3182,88.741901 673.51921,42.77996 660.43773,34.294679 629.67859,39.59798 590.43416,38.183766 558.2608,26.162951 Z" />
     <path class="zone" id="path5" d="m 692.96465,89.095455 69.65001,206.828735 -23.33452,6.01041 -137.88582,62.22539 -85.55992,27.93072 -6.71752,-21.56676 10.96016,-51.61879 10.25305,-30.75915 -0.35356,-54.44722 6.01041,-18.38477 16.97056,-25.8094 18.38478,-18.03123 20.5061,-45.60838 14.84924,-13.78859 25.8094,-7.77817 21.92031,-3.53553 z" />
     <path class="zone" id="path6" d="m 319.61227,229.8097 0.7071,83.4386 -3.18198,46.66905 2.47488,17.67767 19.79899,20.15254 15.55634,-1.06066 49.49748,-26.5165 32.52691,-6.01041 28.63783,0.35356 42.77996,4.59619 12.02081,-51.26524 10.25305,-29.69849 -0.35355,-56.92209 5.3033,-14.84924 z" />
@@ -123,83 +115,134 @@
     <path class="zone" id="path11" d="m 192.6866,828.02204 172.88761,-29.34493 28.99137,65.05382 50.55814,102.88404 -62.9325,24.04163 -66.11449,-1.76777 -87.68124,-28.28427 -33.94113,-21.56675 -13.43502,-19.44544 z" />
     <path class="zone" id="path12" d="m 365.22065,797.97 51.97235,-32.17336 56.9221,-18.73833 138.59293,89.09546 -81.67084,73.5391 -58.33631,42.42641 -26.87005,14.14214 z" />
     <path class="zone" id="path13" d="m 198.69701,704.27835 69.29646,7.42463 37.83021,-13.43503 17.32412,12.37437 8.83883,-15.2028 92.98455,-56.9221 4.24264,16.26346 26.16295,42.77996 13.78858,28.28427 4.24264,21.56676 -55.15433,17.67767 -52.67945,32.17336 -172.18051,30.75914 11.66727,-87.32769 z" />
-    <path class="zone" id="path14" d="m 197.28279,587.95929 67.88225,-14.84924 127.63278,-37.47666 8.48528,39.24442 29.34493,38.18377 -4.24264,25.45584 -94.39876,55.86144 -8.83883,15.9099 -17.67767,-11.66726 -38.18377,13.78858 -68.58935,-8.48528 -10.96016,-73.89266 z" />
-    <path class="zone" id="path15" d="m 197.63635,586.54508 9.54594,-35.35534 42.77996,-88.38835 33.58757,-36.416 20.85965,-14.49569 33.58757,-12.72792 14.49569,-2.12132 24.74874,32.17336 6.71751,25.45584 1.06066,36.416 7.42462,43.13351 -133.64318,39.95154 z" />
-    <path class="zone" id="path16" d="m 352.13918,397.39401 51.26524,-26.87006 32.88046,-6.36396 72.1249,4.94975 43.84062,124.80435 1.76776,39.59798 21.92031,24.39518 -147.78531,71.77134 2.82842,-15.9099 -29.69848,-38.89088 -16.61701,-82.73149 -0.70711,-39.95153 -23.33452,-48.08327 -13.78858,-31.04455 z" />
+    <path class="zone" id="path14" d="m 197.28279,587.95929 67.88225,-14.84924 127.63278,-37.47666 8.48528,39.24442 29.34493,38.18377 -4.24264,25.45584 -94.39876,55.86144 -8.83883,15.9099 -17.67767,-11.66726 -38.18377,13.43503 -29.34493,-30.75914 z" />
+    <path class="zone" id="path15" d="m 205.76805,484.39954 20.50609,24.04163 22.98097,6.71752 31.71212,0 6.71752,15.55635 -13.78859,15.9099 -16.26346,-5.65686 -24.04162,4.94975 -29.6985,-22.62742 z" />
   </svg>
 
-  <script>
-    // --- Set colors programmatically ---
-    // For demo, color some zones differently.
-    const zoneColors = {
-      path4: '#ff4444',
-      path5: '#44ff44',
-      path6: '#4444ff',
-      path7: '#ffff44',
-      path8: '#44ffff',
-      path9: '#ff44ff',
-      path10: '#ffbb44',
-      path11: '#bb44ff',
-      path12: '#44bbff',
-      path13: '#bbff44',
-      path14: '#ff44bb',
-      path15: '#44ffbb',
-      path16: '#bbbbbb',
-    };
+  <!-- Leaderboard -->
+  <div id="leaderboard" aria-label="Leaderboard for team claimed areas">
+    <div class="team">
+      <div class="team-color team1" aria-hidden="true"></div>
+      <div class="team-name">Team 1</div>
+      <div id="score-team1" class="team-score">0</div>
+    </div>
+    <div class="team">
+      <div class="team-color team2" aria-hidden="true"></div>
+      <div class="team-name">Team 2</div>
+      <div id="score-team2" class="team-score">0</div>
+    </div>
+    <div class="team">
+      <div class="team-color team3" aria-hidden="true"></div>
+      <div class="team-name">Team 3</div>
+      <div id="score-team3" class="team-score">0</div>
+    </div>
+  </div>
 
-    for (const id in zoneColors) {
-      const el = document.getElementById(id);
-      if (el) el.style.fill = zoneColors[id];
+<script>
+  // Team color codes (fill colors used in SVG to identify teams)
+  const teamColors = {
+    team1: '#ff4444', // red-ish
+    team2: '#44ff44', // green-ish
+    team3: '#4444ff', // blue-ish
+  };
+
+  // Assign colors to areas for demo purposes:
+  // You can change these colors as you want
+  const areaTeamAssignment = {
+    path4: teamColors.team1,
+    path5: teamColors.team2,
+    path6: teamColors.team3,
+    path7: teamColors.team1,
+    path8: teamColors.team2,
+    path9: teamColors.team3,
+    path10: teamColors.team1,
+    path11: teamColors.team2,
+    path12: teamColors.team3,
+    path13: teamColors.team1,
+    path14: teamColors.team2,
+    path15: teamColors.team3,
+  };
+
+  // Set the fill colors of zones accordingly
+  for (const [id, color] of Object.entries(areaTeamAssignment)) {
+    const path = document.getElementById(id);
+    if (path) {
+      path.style.fill = color;
     }
-
-    // --- Flip countdown timer code ---
-    // Calculate the countdown target: 2 hours starting at 22:20 local time.
-    function getCountdownTimes() {
-  const now = new Date();
-
-  // Start time today at 22:20
-  let startTime = new Date(now);
-  startTime.setHours(23, 20, 0, 0);
-
-  // If current time is before today 22:20, use yesterday 22:20 as start
-  if (now < startTime) {
-    startTime.setDate(startTime.getDate() - 1);
   }
 
-  // Countdown ends 2 hours after start time
-  let endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000);
+  // Leaderboard update function
+  function updateLeaderboard() {
+    // Count claimed areas per team
+    const counts = { team1: 0, team2: 0, team3: 0 };
 
-  return { now, startTime, endTime };
-}
+    // All zones
+    const zones = document.querySelectorAll('.zone');
+    zones.forEach(zone => {
+      const fill = zone.style.fill.toLowerCase();
+      if (fill === teamColors.team1) counts.team1++;
+      else if (fill === teamColors.team2) counts.team2++;
+      else if (fill === teamColors.team3) counts.team3++;
+    });
 
-function updateTimer() {
-  const { now, startTime, endTime } = getCountdownTimes();
+    // Update leaderboard DOM
+    document.getElementById('score-team1').textContent = counts.team1;
+    document.getElementById('score-team2').textContent = counts.team2;
+    document.getElementById('score-team3').textContent = counts.team3;
+  }
 
-  let diff = endTime - now;
+  // Initial leaderboard update
+  updateLeaderboard();
 
-  if (diff < 0) diff = 0; // countdown finished
+  // Countdown Timer logic (2 hours after most recent 22:20 local)
+  function getCountdownTimes() {
+    const now = new Date();
 
-  const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
-  const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
-  const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+    // Start time today at 22:20
+    let startTime = new Date(now);
+    startTime.setHours(22, 20, 0, 0);
 
-  flip(document.getElementById('hours'), hours);
-  flip(document.getElementById('minutes'), minutes);
-  flip(document.getElementById('seconds'), seconds);
-}
+    // If current time is before today 22:20, use yesterday 22:20 as start
+    if (now < startTime) {
+      startTime.setDate(startTime.getDate() - 1);
     }
 
-    function flip(el, newVal) {
-      if (el.textContent !== newVal) {
-        el.classList.remove('flip-animation');
-        void el.offsetWidth; // trigger reflow
-        el.classList.add('flip-animation');
-        el.textContent = newVal;
-      }
-    }
+    // Countdown ends 2 hours after start time
+    let endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000);
 
-    setInterval(updateTimer, 1000);
-    updateTimer();
-  </script>
+    return { now, startTime, endTime };
+  }
+
+  function flip(element, newValue) {
+    // Flip animation (simple fade out/in)
+    if (element.textContent === newValue) return;
+
+    element.style.opacity = '0';
+    setTimeout(() => {
+      element.textContent = newValue;
+      element.style.opacity = '1';
+    }, 300);
+  }
+
+  function updateTimer() {
+    const { now, startTime, endTime } = getCountdownTimes();
+
+    let diff = endTime - now;
+
+    if (diff < 0) diff = 0; // countdown finished
+
+    const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
+    const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
+    const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+
+    flip(document.getElementById('hours'), hours);
+    flip(document.getElementById('minutes'), minutes);
+    flip(document.getElementById('seconds'), seconds);
+  }
+
+  updateTimer();
+  setInterval(updateTimer, 1000);
+
+</script>
 </body>
 </html>
