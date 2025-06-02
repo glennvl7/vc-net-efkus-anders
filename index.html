@@ -37,7 +37,7 @@
 <body>
 
   <h3>City Centre Zones - Brugge</h3>
-
+ <div class="timer" id="countdown">--:--:--</div>
   <div class="map-container">
     <svg viewBox="0 0 800 1000" preserveAspectRatio="xMidYMid meet">
   <path class="zone" id="path4" fill="grey" d="M 531.39075,13.788582 C 504.87424,38.53732 504.87424,38.183766 504.87424,38.183766 l -57.27565,13.788582 -46.31549,16.61701 -74.24621,50.911692 -13.78859,15.55635 6.01041,94.7523 213.54625,-12.37436 18.73833,-26.51651 18.73833,-19.79899 10.25305,-20.5061 10.96015,-26.16295 15.2028,-12.37437 26.5165,-8.13172 22.27387,-3.53554 L 693.3182,88.741901 673.51921,42.77996 660.43773,34.294679 629.67859,39.59798 590.43416,38.183766 558.2608,26.162951 Z" />
@@ -57,6 +57,45 @@
   <path class="zone" id="path18" fill="grey" d="m 612.70803,836.15377 65.76093,-70.71068 -17.32412,-14.49569 -63.99316,-158.74547 -21.56676,-34.64823 -147.07821,71.41778 -1.76777,9.54594 -1.76776,0.70711 4.24264,14.84924 41.36574,71.06423 2.82843,22.27387 z" />
   <path class="zone" id="path19" fill="blue" d="m 678.82251,765.44309 97.58074,-124.09724 23.33452,-51.61879 7.77817,-41.0122 -6.71751,-85.91347 -25.45584,-2.12132 -31.46626,9.89949 -97.93428,64.70027 -44.19418,10.96016 -31.8198,-2.12132 -15.90991,-11.66726 21.92031,24.39518 20.85965,34.64823 63.99317,160.15969 z" />
 </svg>
+</div>
+
+  <script>
+    const countdownElement = document.getElementById("countdown");
+
+    // Get today at 22:20 local time
+    const now = new Date();
+    const startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 20, 0);
+
+    // If it's already past 22:20 today, use tomorrow
+    if (now > startTime) {
+      startTime.setDate(startTime.getDate() + 1);
+    }
+
+    // Set end time to 2 hours after start
+    const endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000);
+
+    function formatTime(seconds) {
+      const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(seconds % 60).padStart(2, '0');
+      return `${hrs}:${mins}:${secs}`;
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const remaining = Math.floor((endTime - now) / 1000);
+
+      if (remaining > 0) {
+        countdownElement.textContent = formatTime(remaining);
+      } else {
+        countdownElement.textContent = "00:00:00";
+        clearInterval(timerInterval);
+      }
+    }
+
+    updateCountdown();
+    const timerInterval = setInterval(updateCountdown, 1000);
+  </script>
 
 </body>
 </html>
