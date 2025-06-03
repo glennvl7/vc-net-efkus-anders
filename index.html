@@ -215,6 +215,46 @@ function updateLeaderboard() {
   // Initial leaderboard update
   updateLeaderboard();
 
+  <div id="logbook" style="margin-top: 40px; width: 100%; max-width: 600px;">
+  <h2 style="text-align: center;">Laatste veroveringen</h2>
+  <ul id="log-entries" style="list-style: none; padding: 0; margin: 0; font-family: 'Courier New', Courier, monospace;">
+    <!-- Entries go here -->
+  </ul>
+</div>
+const logbook = [];
+const maxLogEntries = 5;
+
+// Map colors to team labels
+const teamNames = {
+  [teamColors.team1]: 'Team 1',
+  [teamColors.team2]: 'Team 2',
+  [teamColors.team3]: 'Team 3',
+};
+
+// Helper to add to log
+function logAreaChange(teamColor, zoneId) {
+  const now = new Date();
+  const hhmm = now.toTimeString().slice(0, 5);
+  const team = teamNames[teamColor] || 'Onbekend team';
+  const message = `${hhmm} ${team} heeft gebied ${zoneId} veroverd!`;
+
+  logbook.unshift(message);
+  if (logbook.length > maxLogEntries) logbook.pop();
+
+  renderLogbook();
+}
+
+// Update DOM
+function renderLogbook() {
+  const ul = document.getElementById('log-entries');
+  ul.innerHTML = '';
+  for (const entry of logbook) {
+    const li = document.createElement('li');
+    li.textContent = entry;
+    ul.appendChild(li);
+  }
+}
+  
   // Countdown Timer logic (2 hours after most recent 22:20 local)
   function getCountdownTimes() {
     const now = new Date();
