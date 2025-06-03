@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SVG Zones with Timer & Leaderboard</title>
+  <title>Landverovertje Brugge</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,7 +27,6 @@
       stroke: #222;
       stroke-width: 1;
     }
-    /* Countdown Timer Styles */
     #countdown {
       display: flex;
       justify-content: center;
@@ -52,10 +51,7 @@
     .colon {
       width: 1ch;
       color: #00ffff;
-      user-select: none;
     }
-
-    /* Leaderboard styles */
     #leaderboard {
       display: flex;
       gap: 40px;
@@ -90,11 +86,27 @@
       font-weight: 900;
       font-family: 'Courier New', Courier, monospace;
     }
+    #logbook {
+      margin-top: 40px;
+      width: 100%;
+      max-width: 600px;
+    }
+    #logbook h2 {
+      text-align: center;
+    }
+    #log-entries {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    #log-entries li {
+      margin-bottom: 4px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Countdown Timer -->
   <div id="countdown" aria-label="Countdown timer">
     <div id="hours" class="segment">00</div>
     <div class="colon">:</div>
@@ -123,187 +135,152 @@
   <path class="zone" id="path19" d="m 678.82251,765.44309 97.58074,-124.09724 23.33452,-51.61879 7.77817,-41.0122 -6.71751,-85.91347 -25.45584,-2.12132 -31.46626,9.89949 -97.93428,64.70027 -44.19418,10.96016 -31.8198,-2.12132 -15.90991,-11.66726 21.92031,24.39518 20.85965,34.64823 63.99317,160.15969 z" />
 </svg>
 
-  <!-- Leaderboard -->
-  <div id="leaderboard" aria-label="Leaderboard for team claimed areas">
+   <!-- Leaderboard -->
+  <div id="leaderboard">
     <div class="team">
-      <div class="team-color team1" aria-hidden="true"></div>
+      <div class="team-color team1"></div>
       <div class="team-name">Team 1</div>
       <div id="score-team1" class="team-score">0</div>
     </div>
     <div class="team">
-      <div class="team-color team2" aria-hidden="true"></div>
+      <div class="team-color team2"></div>
       <div class="team-name">Team 2</div>
       <div id="score-team2" class="team-score">0</div>
     </div>
     <div class="team">
-      <div class="team-color team3" aria-hidden="true"></div>
+      <div class="team-color team3"></div>
       <div class="team-name">Team 3</div>
       <div id="score-team3" class="team-score">0</div>
     </div>
   </div>
 
-<script>
-  // Team color codes (fill colors used in SVG to identify teams)
-  const teamColors = {
-    team1: '#ff4444', // red-ish
-    team2: '#44ff44', // green-ish
-    team3: '#4444ff', // blue-ish
-  };
+  <!-- Logbook -->
+  <div id="logbook">
+    <h2>Laatste veroveringen</h2>
+    <ul id="log-entries"></ul>
+  </div>
 
-  // Assign colors to areas for demo purposes:
-  // You can change these colors as you want
-  const areaTeamAssignment = {
-    path4: teamColors.team1,
-    path5: teamColors.team2,
-    path6: teamColors.team3,
-    path7: teamColors.team1,
-    path8: teamColors.team2,
-    path9: teamColors.team3,
-    path10: teamColors.team1,
-    path11: teamColors.team2,
-    path12: teamColors.team3,
-    path13: teamColors.team1,
-    path14: teamColors.team2,
-    path15: teamColors.team3,
-    path16: teamColors.team1,
-    path17: teamColors.team2,
-    path18: teamColors.team3,
-    path19: teamColors.team1,
-  };
+  <script>
+    const teamColors = {
+      team1: '#ff4444',
+      team2: '#44ff44',
+      team3: '#4444ff',
+    };
 
-  // Set the fill colors of zones accordingly
-  for (const [id, color] of Object.entries(areaTeamAssignment)) {
-    const path = document.getElementById(id);
-    if (path) {
-      path.style.fill = color;
-    }
-  }
+    const areaTeamAssignment = {
+      path4: teamColors.team1,
+      path5: teamColors.team2,
+      path6: teamColors.team3,
+      path7: teamColors.team1,
+      path8: teamColors.team2,
+      path9: teamColors.team3,
+      path10: teamColors.team1,
+      path11: teamColors.team2,
+      path12: teamColors.team3,
+      path13: teamColors.team1,
+      path14: teamColors.team2,
+      path15: teamColors.team3,
+      path16: teamColors.team1,
+      path17: teamColors.team2,
+      path18: teamColors.team3,
+      path19: teamColors.team1,
+    };
 
-  // Leaderboard update function
-// Helper: Convert hex color (#rrggbb) to rgb string "rgb(r, g, b)"
-function hexToRgb(hex) {
-  const bigint = parseInt(hex.slice(1), 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return `rgb(${r}, ${g}, ${b})`;
-}
-
-function updateLeaderboard() {
-  const counts = { team1: 0, team2: 0, team3: 0 };
-  const zones = document.querySelectorAll('.zone');
-
-  // Precompute rgb equivalents of team colors
-  const teamColorsRgb = {
-    team1: hexToRgb(teamColors.team1),
-    team2: hexToRgb(teamColors.team2),
-    team3: hexToRgb(teamColors.team3),
-  };
-
-  zones.forEach(zone => {
-    const fill = getComputedStyle(zone).fill; // computed style gives rgb(...)
-    if (fill === teamColorsRgb.team1) counts.team1++;
-    else if (fill === teamColorsRgb.team2) counts.team2++;
-    else if (fill === teamColorsRgb.team3) counts.team3++;
-  });
-
-  document.getElementById('score-team1').textContent = counts.team1;
-  document.getElementById('score-team2').textContent = counts.team2;
-  document.getElementById('score-team3').textContent = counts.team3;
-}
-
-  // Initial leaderboard update
-  updateLeaderboard();
-
-  <div id="logbook" style="margin-top: 40px; width: 100%; max-width: 600px;">
-  <h2 style="text-align: center;">Laatste veroveringen</h2>
-  <ul id="log-entries" style="list-style: none; padding: 0; margin: 0; font-family: 'Courier New', Courier, monospace;">
-    <!-- Entries go here -->
-  </ul>
-</div>
-const logbook = [];
-const maxLogEntries = 5;
-
-// Map colors to team labels
-const teamNames = {
-  [teamColors.team1]: 'Team 1',
-  [teamColors.team2]: 'Team 2',
-  [teamColors.team3]: 'Team 3',
-};
-
-// Helper to add to log
-function logAreaChange(teamColor, zoneId) {
-  const now = new Date();
-  const hhmm = now.toTimeString().slice(0, 5);
-  const team = teamNames[teamColor] || 'Onbekend team';
-  const message = `${hhmm} ${team} heeft gebied ${zoneId} veroverd!`;
-
-  logbook.unshift(message);
-  if (logbook.length > maxLogEntries) logbook.pop();
-
-  renderLogbook();
-}
-
-// Update DOM
-function renderLogbook() {
-  const ul = document.getElementById('log-entries');
-  ul.innerHTML = '';
-  for (const entry of logbook) {
-    const li = document.createElement('li');
-    li.textContent = entry;
-    ul.appendChild(li);
-  }
-}
-  
-  // Countdown Timer logic (2 hours after most recent 22:20 local)
-  function getCountdownTimes() {
-    const now = new Date();
-
-    // Start time today at 22:20
-    let startTime = new Date(now);
-    startTime.setHours(22, 20, 0, 0);
-
-    // If current time is before today 22:20, use yesterday 22:20 as start
-    if (now < startTime) {
-      startTime.setDate(startTime.getDate() - 1);
+    for (const [id, color] of Object.entries(areaTeamAssignment)) {
+      const path = document.getElementById(id);
+      if (path) {
+        path.style.fill = color;
+      }
     }
 
-    // Countdown ends 2 hours after start time
-    let endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000);
+    function hexToRgb(hex) {
+      const bigint = parseInt(hex.slice(1), 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `rgb(${r}, ${g}, ${b})`;
+    }
 
-    return { now, startTime, endTime };
-  }
+    function updateLeaderboard() {
+      const counts = { team1: 0, team2: 0, team3: 0 };
+      const zones = document.querySelectorAll('.zone');
+      const teamColorsRgb = {
+        team1: hexToRgb(teamColors.team1),
+        team2: hexToRgb(teamColors.team2),
+        team3: hexToRgb(teamColors.team3),
+      };
 
-  function flip(element, newValue) {
-    // Flip animation (simple fade out/in)
-    if (element.textContent === newValue) return;
+      zones.forEach(zone => {
+        const fill = getComputedStyle(zone).fill;
+        if (fill === teamColorsRgb.team1) counts.team1++;
+        else if (fill === teamColorsRgb.team2) counts.team2++;
+        else if (fill === teamColorsRgb.team3) counts.team3++;
+      });
 
-    element.style.opacity = '0';
-    setTimeout(() => {
-      element.textContent = newValue;
-      element.style.opacity = '1';
-    }, 300);
-  }
+      document.getElementById('score-team1').textContent = counts.team1;
+      document.getElementById('score-team2').textContent = counts.team2;
+      document.getElementById('score-team3').textContent = counts.team3;
+    }
 
-  function updateTimer() {
-    const { now, startTime, endTime } = getCountdownTimes();
+    updateLeaderboard();
 
-    let diff = endTime - now;
+    const logbook = [];
+    const maxLogEntries = 5;
 
-    if (diff < 0) diff = 0; // countdown finished
+    const teamNames = {
+      [teamColors.team1]: 'Team 1',
+      [teamColors.team2]: 'Team 2',
+      [teamColors.team3]: 'Team 3',
+    };
 
-    const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
-    const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
-    const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+    function logAreaChange(teamColor, zoneId) {
+      const now = new Date();
+      const hhmm = now.toTimeString().slice(0, 5);
+      const team = teamNames[teamColor] || 'Onbekend team';
+      const message = `${hhmm} ${team} heeft gebied ${zoneId} veroverd!`;
 
-    flip(document.getElementById('hours'), hours);
-    flip(document.getElementById('minutes'), minutes);
-    flip(document.getElementById('seconds'), seconds);
-  }
+      logbook.unshift(message);
+      if (logbook.length > maxLogEntries) logbook.pop();
 
-  updateTimer();
-  setInterval(updateTimer, 1000);
+      renderLogbook();
+    }
 
-</script>
+    function renderLogbook() {
+      const ul = document.getElementById('log-entries');
+      ul.innerHTML = '';
+      for (const entry of logbook) {
+        const li = document.createElement('li');
+        li.textContent = entry;
+        ul.appendChild(li);
+      }
+    }
+
+    function getCountdownTimes() {
+      const now = new Date();
+      let startTime = new Date(now);
+      startTime.setHours(22, 20, 0, 0);
+      if (now < startTime) startTime.setDate(startTime.getDate() - 1);
+      const endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000);
+      return { now, endTime };
+    }
+
+    function updateCountdown() {
+      const { now, endTime } = getCountdownTimes();
+      let diff = endTime - now;
+      if (diff < 0) diff = 0;
+
+      const hours = Math.floor(diff / 1000 / 60 / 60);
+      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+
 </body>
 </html>
