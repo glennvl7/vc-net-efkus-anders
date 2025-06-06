@@ -157,9 +157,9 @@
 
   <!-- Logbook -->
 
-  <div id="logbook">
-  <h2>Laatste veroveringen</h2>
-  <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; color: white; background: #222;">
+<div id="logbook">
+  <h2 style="color: #222;">Laatste veroveringen</h2>
+  <table id="logbookTable" border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; color: white; background: #222;">
     <thead>
       <tr>
         <th>Gebied</th>
@@ -202,6 +202,30 @@
     </tbody>
   </table>
 </div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('#logbookTable tbody');
+    const rows = Array.from(table.querySelectorAll('tr'));
+
+    rows.sort((a, b) => {
+      const timeA = a.children[1].textContent.trim();
+      const timeB = b.children[1].textContent.trim();
+
+      // Convert "HH:MM" to minutes for comparison
+      const [hA, mA] = timeA.split(':').map(Number);
+      const [hB, mB] = timeB.split(':').map(Number);
+      const totalA = hA * 60 + mA;
+      const totalB = hB * 60 + mB;
+
+      return totalB - totalA; // Descending (most recent first)
+    });
+
+    // Append sorted rows
+    rows.forEach(row => table.appendChild(row));
+  });
+</script>
+
   
   <div id="logbook">
     <h2></h2>
