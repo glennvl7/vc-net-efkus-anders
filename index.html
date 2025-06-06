@@ -78,6 +78,7 @@
     .team1 { background-color: #1A1819; box-shadow: 0 0 10px #1A1819; }
     .team2 { background-color: #FFE87C; box-shadow: 0 0 10px #FFE87C; }
     .team3 { background-color: #CA3433; box-shadow: 0 0 10px #CA3433; }
+    .team4 { background-color: #FA8128; box-shadow: 0 0 10px #FA8128; }
     .team-name {
       font-size: 1.3rem;
       margin-bottom: 6px;
@@ -151,6 +152,11 @@
     <div class="team">
       <div class="team-color team3"></div>
       <div class="team-name">Team 3</div>
+      <div id="score-team3" class="team-score">0</div>
+    </div>
+    <div class="team">
+      <div class="team-color team4"></div>
+      <div class="team-name">Team 4</div>
       <div id="score-team3" class="team-score">0</div>
     </div>
   </div>
@@ -255,7 +261,7 @@
       path16: teamColors.team1,
       path17: teamColors.team2,
       path18: teamColors.team3,
-      path19: teamColors.team3,
+      path19: teamColors.team4,
     };
 
     for (const [id, color] of Object.entries(areaTeamAssignment)) {
@@ -274,12 +280,13 @@
     }
 
     function updateLeaderboard() {
-      const counts = { team1: 0, team2: 0, team3: 0 };
+      const counts = { team1: 0, team2: 0, team3: 0, team4: 0 };
       const zones = document.querySelectorAll('.zone');
       const teamColorsRgb = {
         team1: hexToRgb(teamColors.team1),
         team2: hexToRgb(teamColors.team2),
         team3: hexToRgb(teamColors.team3),
+        team4: hexToRgb(teamColors.team4)
       };
 
       zones.forEach(zone => {
@@ -287,11 +294,13 @@
         if (fill === teamColorsRgb.team1) counts.team1++;
         else if (fill === teamColorsRgb.team2) counts.team2++;
         else if (fill === teamColorsRgb.team3) counts.team3++;
+        else if (fill === teamColorsRgb.team4) counts.team4++;
       });
 
       document.getElementById('score-team1').textContent = counts.team1;
       document.getElementById('score-team2').textContent = counts.team2;
       document.getElementById('score-team3').textContent = counts.team3;
+      document.getElementById('score-team4').textContent = counts.team4;
     }
 
     updateLeaderboard();
