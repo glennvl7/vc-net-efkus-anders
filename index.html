@@ -341,7 +341,7 @@
     function getCountdownTimes() {
       const now = new Date();
       let startTime = new Date(now);
-      startTime.setHours(22, 20, 0, 0);
+      startTime.setHours(16, 0, 0, 0);
       if (now < startTime) startTime.setDate(startTime.getDate() - 1);
       const endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000);
       return { now, endTime };
@@ -364,11 +364,6 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
   </script>
-
-<div>
-  <h1>Tikker</h1>
-  <p>Hein</p>
-</div>
   
 </body>
 </html>
