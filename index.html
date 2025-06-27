@@ -77,9 +77,9 @@
       box-shadow: 0 0 12px;
     }
     .team1 { background-color: #1A1819; box-shadow: 0 0 10px #1A1819; }
-    .team2 { background-color: #FFE87C; box-shadow: 0 0 10px #FFE87C; }
-    .team3 { background-color: #CA3433; box-shadow: 0 0 10px #CA3433; }
-    .team4 { background-color: #FA8128; box-shadow: 0 0 10px #FA8128; }
+    .team2 { background-color: #2a3540; box-shadow: 0 0 10px #2a3540; }
+    .team3 { background-color: #7698c8; box-shadow: 0 0 10px #7698c8; }
+    .team4 { background-color: #fdb0c0; box-shadow: 0 0 10px #fdb0c0; }
     .team-name {
       font-size: 1.3rem;
       margin-bottom: 6px;
@@ -242,9 +242,9 @@
   <script>
     const teamColors = {
       team1: '#1A1819',
-      team2: '#FFE87C',
-      team3: '#CA3433',
-      team4: '#FA8128',
+      team2: '#2a3540',
+      team3: '#7698c8',
+      team4: '#fdb0c0',
       team5: '#C5C6C7',
     };
 
@@ -342,7 +342,7 @@
     function getCountdownTimes() {
       const now = new Date();
       let startTime = new Date(now);
-      startTime.setHours(16, 0, 0, 0);
+      startTime.setHours(13, 0, 0, 0);
       if (now < startTime) startTime.setDate(startTime.getDate() - 1);
       const endTime = new Date(startTime.getTime() + 2.5 * 60 * 60 * 1000);
       return { now, endTime };
