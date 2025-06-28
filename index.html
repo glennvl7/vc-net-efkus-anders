@@ -166,7 +166,7 @@
 
 <div id="logbook">
   <h2 style="color: #343232;">Laatste veroveringen</h2>
-  <table id="logbookTable" border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; color: white; background: #5c5858;">
+  <table id="logbookTable" border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; color: white; background: #343232;">
     <thead>
       <tr>
         <th>Gebied</th>
@@ -249,10 +249,10 @@
     };
 
     const areaTeamAssignment = {
-      path4: teamColors.team1,
-      path5: teamColors.team2,
-      path6: teamColors.team3,
-      path7: teamColors.team4,
+      path4: teamColors.team5,
+      path5: teamColors.team5,
+      path6: teamColors.team5,
+      path7: teamColors.team5,
       path8: teamColors.team5,
       path9: teamColors.team5,
       path10: teamColors.team5,
@@ -342,7 +342,7 @@
     function getCountdownTimes() {
       const now = new Date();
       let startTime = new Date(now);
-      startTime.setHours(13, 0, 0, 0);
+      startTime.setHours(13, 30, 0, 0);
       if (now < startTime) startTime.setDate(startTime.getDate() - 1);
       const endTime = new Date(startTime.getTime() + 2.5 * 60 * 60 * 1000);
       return { now, endTime };
